@@ -27,6 +27,7 @@ document.addEventListener(`DOMContentLoaded`, () => {
     const searchInput = document.querySelector(`.search`);
     const searchBtn = document.querySelector(`.search-btn`);
     const cancelBtn = document.querySelector(`.cancel-btn`);
+    const userList = document.querySelector(`.users__list`);
 
     const addUserCard = (dataArr) => {
         newArr = dataArr.map((user, id) => {
@@ -40,7 +41,6 @@ document.addEventListener(`DOMContentLoaded`, () => {
         if (newArr.length === 0) {
             addUserCard(dataArr);
         }
-        const userList = document.querySelector(`.users__list`);
         userList.innerHTML = ``;
         newArr.forEach((user) => {
             const card = user.createCard(`medium`);
@@ -75,14 +75,23 @@ document.addEventListener(`DOMContentLoaded`, () => {
 
     function openModalCard() {
         cardOverlay.classList.add(`modal-overlay_open`);
-        //disableScroll();
+        disableScroll();
     }
 
     function closeModalCard() {
         cardOverlay.classList.remove(`modal-overlay_open`);
-        //enableScroll();
+        enableScroll();
     }
-
+    function disableScroll() {
+        const scrollWidth = window.innerWidth - document.body.offsetWidth;
+        document.body.style.cssText = `
+    overflow: hidden;
+    padding-right: ${scrollWidth}px;
+    `;
+    }
+    function enableScroll()  {
+        document.body.style.cssText = ``;
+    }
     //функции сортировки
     function sortAToZ(arr) {
         arr.sort((a, b) => {
@@ -129,7 +138,12 @@ document.addEventListener(`DOMContentLoaded`, () => {
         const value = e.target.value;
         searchBtn.addEventListener(`click`, () => {
             selectUsers(newArr, value);
-            renderList();
+            if (newArr.length > 0){
+                renderList();
+            } else {
+                userList.textContent = `No Results`;
+            }
+
         })
     })
     cancelBtn.addEventListener(`click`, () => {
@@ -154,7 +168,7 @@ document.addEventListener(`DOMContentLoaded`, () => {
             card.dataset.id = this.id;
             const img = document.createElement(`img`);
             img.src = this.user[`picture`][pictureSize];
-            img.alt = `photo of ${this.user[`gender`] === `male` ? `men` : `women`}`;
+            img.alt = `photo of this ${this.user[`gender`] === `male` ? `men` : `women`}`;
             card.append(img);
             const fullName = document.createElement(`p`);
             fullName.textContent = `${this.user[`name`][`title`]} ${this.user[`name`][`first`]} ${this.user[`name`][`last`]}`;
