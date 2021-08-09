@@ -1,6 +1,6 @@
 `use strict`;
 
-let userCardArr = [];
+
 const req = new Request(`https://api.randomuser.me/1.0/?results=50&nat=gb,us&inc=gender,name,location,email,phone,picture`)
 const getData = async () => {
     const data = await fetch(req, {
@@ -20,22 +20,25 @@ document.addEventListener(`DOMContentLoaded`, () => {
     //каждому юзеру добавляется свойство
     // с объектом с классом для рендера карты и ид
     let newArr = [];
+    let filteredArr = [];
+    const sortAToZBtn = document.querySelector(`.sort-up`);
+    const sortZToABtn = document.querySelector(`.sort-down`);
     const cardOverlay = document.querySelector(`.modal-overlay`);
 
     const addUserCard = (dataArr) => {
-        //тут попробуй по уму сделать
-        newArr = [];
-        dataArr.map((user, id) => {
-            user = new UserCardPreview(user, id, `card`, `li`);
-            newArr.push(user);
+        newArr = dataArr.map((user, id) => {
+            return user = new UserCardPreview(user, id, `card`, `li`);
         });
         return newArr;
     }
-    //рендер списка при загрузке страницы
-    const renderList = (data) => {
-        addUserCard(data);
+    //рендер списка при загрузке страницы, при селекте и при сортировке
+    const renderList = (dataArr) => {
+        //добавь условие
+        if(newArr.length===0){
+            addUserCard(dataArr);
+        }
         const userList = document.querySelector(`.users__list`);
-
+        userList.innerHTML = ``;
         newArr.forEach((user) => {
             const card = user.createCard(`medium`);
             card.append(user.createBtn(`..show more info`, `modal-open`));
@@ -48,8 +51,8 @@ document.addEventListener(`DOMContentLoaded`, () => {
                 const cardFullInfoElement = document.querySelector(`.card_full-info`);
                 const id = target.closest(`.card`).dataset.id;
                 const user = newArr[id].user;
+                //это все в отдельную функцию createModalCardElement() и createBtn() добавь
                 const cardFullInfo = new UserCard(user, id, `card_full-info`, `div`);
-                console.log(cardFullInfo);
                 const fullCard = cardFullInfo.createCard(`large`);
                 cardFullInfoElement.innerHTML = ``;
                 openModalCard();
@@ -77,9 +80,44 @@ document.addEventListener(`DOMContentLoaded`, () => {
         //enableScroll();
     }
 
-//!!прям важно, попробуй в коллбэк кидать addUserCard ,сразу  элементам датаArr навешивать прототип,
-// а потом вызывать рендерлист. это как-то гибче выглядит
+    //функции сортировки
+    function sortAToZ(arr) {
+        arr.sort((a, b) => {
+            let lastNameA = a.user.name[`last`].toLowerCase(), lastNameB = b.user.name[`last`].toLowerCase();
+            if (lastNameA < lastNameB) {
+                return -1;
+            }
+            if (lastNameA > lastNameB) {
+                return 1;
+            }
+            return 0;
+        });
+        arr.forEach((user, id) => user.id = id);
+        return arr;
+    }
+
+    function sortZToA(arr) {
+        sortAToZ(arr).reverse();
+        arr.forEach((user, id) => user.id = id);
+        return arr;
+    }
+
+
+    //функция селект
+    function selectUsers(arr, value){
+
+    }
+
+//при загрузке страницы, получаем данные, навешиваем юзерам классы и сохраняем в новый массив
     getUserList(renderList);
+sortAToZBtn.addEventListener(`click`, () => {
+    sortAToZ(newArr);
+    renderList();
+});
+sortZToABtn.addEventListener(`click`, () =>{
+    sortZToA(newArr);
+    renderList();
+});
 
     class UserCardPreview {
         constructor(user, id, classname, tagname) {

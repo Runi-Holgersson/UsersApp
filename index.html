@@ -6,11 +6,21 @@
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
+<header>
+    <div class="container">
+        <form action="#"><input type="text" placeholder="Enter user's name">
+            <button class="search">Search</button>
+            <button class="cancel">Cancel results</button>
+        </form>
+        <button class="sort-up">A->Z</button>
+        <button class="sort-down">Z->A</button>
+    </div>
+</header>
 <div class="container">
     <ul class="users__list"></ul>
-<div class="modal-overlay">
-    <div class="card card_full-info"></div>
-</div>
+    <div class="modal-overlay">
+        <div class="card card_full-info"></div>
+    </div>
 </div>
 <script src="main.js"></script>
 </body>
