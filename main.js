@@ -1,6 +1,7 @@
 `use strict`;
 
-
+let newArr = [];
+let filteredArr = [];
 const req = new Request(`https://api.randomuser.me/1.0/?results=50&nat=gb,us&inc=gender,name,location,email,phone,picture`)
 const getData = async () => {
     const data = await fetch(req, {
@@ -19,11 +20,13 @@ const getUserList = (callback) => {
 document.addEventListener(`DOMContentLoaded`, () => {
     //каждому юзеру добавляется свойство
     // с объектом с классом для рендера карты и ид
-    let newArr = [];
-    let filteredArr = [];
+
     const sortAToZBtn = document.querySelector(`.sort-up`);
     const sortZToABtn = document.querySelector(`.sort-down`);
     const cardOverlay = document.querySelector(`.modal-overlay`);
+    const searchInput = document.querySelector(`.search`);
+    const searchBtn = document.querySelector(`.search-btn`);
+    const cancelBtn = document.querySelector(`.cancel-btn`);
 
     const addUserCard = (dataArr) => {
         newArr = dataArr.map((user, id) => {
@@ -34,7 +37,7 @@ document.addEventListener(`DOMContentLoaded`, () => {
     //рендер списка при загрузке страницы, при селекте и при сортировке
     const renderList = (dataArr) => {
         //добавь условие
-        if(newArr.length===0){
+        if (newArr.length === 0) {
             addUserCard(dataArr);
         }
         const userList = document.querySelector(`.users__list`);
@@ -104,20 +107,37 @@ document.addEventListener(`DOMContentLoaded`, () => {
 
 
     //функция селект
-    function selectUsers(arr, value){
-
+    function selectUsers(arr, value) {
+        newArr = arr.filter(item => {
+            let fullName = `${item.user.name[`first`].toLowerCase()} ${item.user.name[`last`].toLowerCase()}`;
+            return (fullName.indexOf(value.toLowerCase(), 0) !== -1);
+        });
+        return newArr.forEach((user, id) => user.id = id);
     }
 
 //при загрузке страницы, получаем данные, навешиваем юзерам классы и сохраняем в новый массив
     getUserList(renderList);
-sortAToZBtn.addEventListener(`click`, () => {
-    sortAToZ(newArr);
-    renderList();
-});
-sortZToABtn.addEventListener(`click`, () =>{
-    sortZToA(newArr);
-    renderList();
-});
+    sortAToZBtn.addEventListener(`click`, () => {
+        sortAToZ(newArr);
+        renderList();
+    });
+    sortZToABtn.addEventListener(`click`, () => {
+        sortZToA(newArr);
+        renderList();
+    });
+    searchInput.addEventListener(`change`, (e) => {
+        const value = e.target.value;
+        searchBtn.addEventListener(`click`, () => {
+            selectUsers(newArr, value);
+            renderList();
+        })
+    })
+    cancelBtn.addEventListener(`click`, () => {
+        newArr =[];
+        searchInput.value = ``;
+        getUserList(renderList);
+    })
+
 
     class UserCardPreview {
         constructor(user, id, classname, tagname) {
