@@ -2,19 +2,7 @@
 
 let newArr = [];
 const req = new Request(`https://api.randomuser.me/1.0/?results=50&nat=gb,us&inc=gender,name,location,email,phone,picture`)
-/*const getData = async () => {
-    const data = await fetch(req, {
-        mode: "cors"
-    });
-    if (data.ok) {
-        return data.json();
-    } else throw new Error(`Данные не были получены, ошибка ${data.status}:${data.statusText}`);
-};
-const getUserList = (callback) => {
-    getData()
-        .then(data => callback(data.results))
-        .catch(err => console.log(err));
-};*/
+
 const getUserList = (callback) => {
     fetch(req)
         .then(response => response.json())
@@ -39,9 +27,9 @@ document.addEventListener(`DOMContentLoaded`, () => {
         });
         return newArr;
     }
-    //рендер списка при загрузке страницы, при селекте и при сортировке
+
     const renderList = (dataArr) => {
-        //добавь условие
+
         if (newArr.length === 0) {
             addUserCard(dataArr);
         }
@@ -51,23 +39,20 @@ document.addEventListener(`DOMContentLoaded`, () => {
             card.append(user.createBtn(`..show more info`, `modal-open`));
             userList.append(card);
         })
-        //открытие модального окна
+        //open modal element
         userList.addEventListener(`click`, (e) => {
             const target = e.target;
             if (target.classList.contains(`modal-open`)) {
-
                 const id = target.closest(`.card`).dataset.id;
                 const user = newArr[id].user;
-                //это все в отдельную функцию createModalCardElement() и createBtn() добавь
                 const cardFullInfo = new UserCard(user, id, `card_full-info`, `div`);
                 const fullCard = cardFullInfo.createCard(`large`, `card__wrapper_column`);
                 const closeModalBtn = cardFullInfo.createBtn(`Close user card`, `modal-open`);
                 fullCard.append(closeModalBtn);
                 cardFullInfoElement.innerHTML = ``;
                 openModalCard();
-                //селекторы потом менять будешь
                 cardFullInfoElement.append(fullCard);
-                //закрытие модального окна
+                //close modal element
                 cardOverlay.addEventListener(`click`, (event) => {
                     if (event.target === cardOverlay) {
                         closeModalCard();
@@ -104,7 +89,6 @@ document.addEventListener(`DOMContentLoaded`, () => {
         document.body.style.cssText = ``;
     }
 
-    //функции сортировки
     function sortAToZ(arr) {
         arr.sort((a, b) => {
             let lastNameA = a.user.name[`last`].toLowerCase(), lastNameB = b.user.name[`last`].toLowerCase();
@@ -126,8 +110,6 @@ document.addEventListener(`DOMContentLoaded`, () => {
         return arr;
     }
 
-
-    //функция селект
     function selectUsers(arr, value) {
         newArr = arr.filter(item => {
             let fullName = `${item.user.name[`first`].toLowerCase()} ${item.user.name[`last`].toLowerCase()}`;
@@ -136,7 +118,6 @@ document.addEventListener(`DOMContentLoaded`, () => {
         return newArr.forEach((user, id) => user.id = id);
     }
 
-//при загрузке страницы, получаем данные, навешиваем юзерам классы и сохраняем в новый массив
     getUserList(renderList);
     sortAToZBtn.addEventListener(`click`, () => {
         sortAToZ(newArr);
@@ -155,7 +136,6 @@ document.addEventListener(`DOMContentLoaded`, () => {
             } else {
                 userList.textContent = `No Results`;
             }
-
         })
     })
     cancelBtn.addEventListener(`click`, () => {
@@ -172,8 +152,9 @@ document.addEventListener(`DOMContentLoaded`, () => {
             this.classname = classname;
             this.tagname = tagname;
         }
-        uppercaseFirstLetter(word){
-            if(word.length > 1){
+
+        uppercaseFirstLetter(word) {
+            if (word.length > 1) {
                 return `${word[0].toUpperCase()}${word.substring(1)}`;
             } else return word;
         }
@@ -184,7 +165,7 @@ document.addEventListener(`DOMContentLoaded`, () => {
             for (let key in name) {
                 fullName.push(this.uppercaseFirstLetter(name[key]));
             }
-            fullName[0]!==`Miss` ? fullName[0] = `${fullName[0]}.`: fullName[0];
+            fullName[0] !== `Miss` ? fullName[0] = `${fullName[0]}.` : fullName[0];
             return fullName.join(` `);
         }
 
@@ -224,11 +205,11 @@ document.addEventListener(`DOMContentLoaded`, () => {
             const card = super.createCard(pictureSize, wrapperClass);
             const info = document.createElement(`div`);
             for (let key in this.user) {
-                if (key !== `name` && key !== `picture`&& key !== `location`) {
+                if (key !== `name` && key !== `picture` && key !== `location`) {
                     info.append(this.createInfoRow(key, this.user[key]));
                 }
-                if (key === `location`){
-                    for(let i in this.user[`location`]){
+                if (key === `location`) {
+                    for (let i in this.user[`location`]) {
                         info.append(this.createInfoRow(i, this.user[`location`][i]));
                     }
                 }
@@ -237,10 +218,5 @@ document.addEventListener(`DOMContentLoaded`, () => {
             return card;
         }
     }
-
 });
 
-
-//модальное окно для каждого пользователя
-
-//сортировка и поиск
