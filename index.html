@@ -3,24 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <title>UsersApp</title>
+    <link rel="stylesheet" href="libs/normalize.css">
+    <link rel="stylesheet" href="libs/font-awesome-4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-<header>
-    <div class="container">
-        <form action="#"><input type="text" placeholder="Enter user's name" class="search">
-            <button class="search-btn">Search</button>
-            <button class="cancel-btn">Cancel results</button>
-        </form>
-        <button class="sort-up">A->Z</button>
-        <button class="sort-down">Z->A</button>
+<div class="wrapper">
+    <div class="content">
+        <header>
+            <div class="container">
+                <h1>My FriendList</h1>
+                <div class="header_wrapper">
+                    <form action="#"><input type="text" placeholder="Enter user's name" class="search">
+                        <button class="search-btn">Search</button>
+                        <button class="cancel-btn">Cancel results</button>
+                    </form>
+                    <div class="btns_wrapper">
+                        <span class="sort">Sort:</span>
+                        <button class="sort-up">A->Z</button>
+                        <button class="sort-down">Z->A</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <div class="users_wrapper">
+            <div class="container">
+                <ul class="users__list"></ul>
+                <div class="modal-overlay">
+                    <div class="card card_full-info"></div>
+                </div>
+            </div>
+        </div>
     </div>
-</header>
-<div class="container">
-    <ul class="users__list"></ul>
-    <div class="modal-overlay">
-        <div class="card card_full-info"></div>
-    </div>
+    <footer>
+        <div class="container">
+            <div class="footer__wrapper">
+                <div class="footer__copy">&copy; 2021 All Rights Reserved.</div>
+                <div class="footer__icons">
+                    <a href="#" class="socials"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                    <a href="#" class="socials"><i class="fa fa-twitter" aria-hidden="true"></i></a>
+                    <a href="#" class="socials"><i class="fa fa-linkedin" aria-hidden="true"></i></a>
+                    <a href="#" class="socials"><i class="fa fa-pinterest-p" aria-hidden="true"></i></a>
+                    <a href="#" class="socials"><i class="fa fa-google-plus" aria-hidden="true"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
 </div>
 <script src="main.js"></script>
 </body>
